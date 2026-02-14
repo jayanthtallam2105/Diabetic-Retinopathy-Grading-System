@@ -1,0 +1,16 @@
+This file is just a human-readable list of required frontend packages.
+Install them using npm from the 'frontend' directory, not with pip.
+
+Runtime dependencies (npm install):
+  react
+  react-dom
+  axios
+
+Dev / tooling dependencies (npm install -D):
+  vite
+  @vitejs/plugin-react-swc
+  tailwindcss
+  @tailwindcss/postcss
+  postcss
+  autoprefixer
+
