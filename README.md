@@ -530,4 +530,3 @@ This is an academic/research project. For contributions or questions, please con
 
 ---
 
-**Built with ❤️ for medical AI research**
