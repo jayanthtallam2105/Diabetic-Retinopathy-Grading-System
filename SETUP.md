@@ -8,65 +8,80 @@ This is a quick reference guide for setting up the **FastAPI backend** and **Rea
 
 ### Required Software
 
-1. **Python 3.8+** ✅ (You have Python 3.14.2 installed)
-2. **Node.js 16+ and npm** ⚠️ (Not detected - see installation below)
+1. **Python 3.8+** - [Download Python](https://www.python.org/downloads/)
+2. **Node.js 16+ and npm** - [Download Node.js](https://nodejs.org/)
 
-### Installing Node.js
-
-If Node.js is not installed:
-
-1. Download Node.js from [https://nodejs.org/](https://nodejs.org/)
-2. Install the LTS (Long Term Support) version
-3. Restart your terminal/PowerShell after installation
-4. Verify installation by running:
-   ```powershell
-   node --version
-   npm --version
-   ```
-
-## Quick Start
-
-### Option 1: Start Both Servers Automatically (Recommended)
-
-Run the following command in PowerShell from the project root:
+### Verify Installations
 
 ```powershell
-.\start_both.ps1
+python --version
+node --version
+npm --version
 ```
 
-This will open two separate PowerShell windows:
-- One for the backend server (port 8000)
-- One for the frontend server (port 5173)
+## Quick Setup
 
-### Option 2: Start Servers Manually
+### 1. Backend Setup
 
-#### Start Backend Server
+Navigate to the backend directory and install dependencies:
 
-```powershell
-.\start_backend.ps1
-```
-
-Or manually:
 ```powershell
 cd backend
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
 
-#### Start Frontend Server
+**Note**: This project uses system-wide Python installation. No virtual environment is required.
 
-```powershell
-.\start_frontend.ps1
-```
+### 2. Frontend Setup
 
-Or manually:
+Navigate to the frontend directory and install dependencies:
+
 ```powershell
 cd frontend
 npm install
+```
+
+### 3. Verify Model Files
+
+Ensure all model weight files are present in `backend/models/`:
+- `efficientnet_final.pt` (or `efficientnet.pt`)
+- `resnet50.pt`
+- `vit.pt`
+- `hybrid_effvit.pt`
+- `hybrid_resvit.pt`
+
+> **Important**: Model files are not tracked in git (see `.gitignore`). You need to add them manually to the `backend/models/` directory.
+
+## Running the Application
+
+### Start Backend Server
+
+Open a terminal/PowerShell window:
+
+```powershell
+cd backend
+python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
+
+The backend will be available at:
+- **API**: http://127.0.0.1:8000
+- **API Documentation**: http://127.0.0.1:8000/docs
+- **Health Check**: http://127.0.0.1:8000/health
+
+### Start Frontend Server
+
+Open a **new** terminal/PowerShell window:
+
+```powershell
+cd frontend
 npm run dev
 ```
+
+The frontend will be available at:
+- **Web Application**: http://localhost:5173
+
+**Important**: Start the backend server **before** the frontend to ensure proper connectivity.
 
 ## Accessing the Application
 
@@ -79,69 +94,99 @@ npm run dev
 
 ```
 .
-├── backend/              # FastAPI backend
-│   ├── main.py          # FastAPI application
-│   ├── inference.py     # Model inference logic
-│   ├── image_validation.py  # Image quality validation
-│   ├── models/          # Trained model files (.pt)
-│   └── requirements.txt # Python dependencies
+├── backend/                    # FastAPI backend
+│   ├── main.py                # FastAPI application
+│   ├── inference.py           # Model inference logic
+│   ├── image_validation.py    # Image quality validation
+│   ├── utils.py               # Constants and helpers
+│   ├── models/                # Trained model files (.pt) - not in git
+│   │   ├── efficientnet_final.pt
+│   │   ├── resnet50.pt
+│   │   ├── vit.pt
+│   │   ├── hybrid_effvit.pt
+│   │   └── hybrid_resvit.pt
+│   └── requirements.txt       # Python dependencies
 │
-├── frontend/            # React + Vite frontend
+├── frontend/                   # React + Vite frontend
 │   ├── src/
-│   │   ├── App.jsx      # Main application component
-│   │   └── components/  # React components
-│   ├── package.json     # Node.js dependencies
-│   └── vite.config.js   # Vite configuration
+│   │   ├── App.jsx            # Main application component
+│   │   ├── components/        # React components
+│   │   │   ├── Upload.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   └── ResultCard.jsx
+│   │   └── main.jsx           # React entry point
+│   ├── package.json           # Node.js dependencies
+│   └── vite.config.js         # Vite configuration
 │
-├── start_backend.ps1    # Backend startup script
-├── start_frontend.ps1   # Frontend startup script
-└── start_both.ps1       # Start both servers
+├── README.md                   # Comprehensive documentation
+└── SETUP.md                    # This file (quick reference)
 ```
 
 ## Troubleshooting
 
 ### Backend Issues
 
-1. **Virtual environment not activating**:
-   - Run PowerShell as Administrator
-   - Set execution policy: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+**Models not loading**:
+- Ensure all `.pt` model files are in `backend/models/` directory
+- Check that model files are not corrupted
+- Verify file names match expected names (see "Verify Model Files" section)
 
-2. **Models not loading**:
-   - Ensure all `.pt` model files are in `backend/models/` directory
-   - Check that model files are not corrupted
+**Port 8000 already in use**:
+- Change the port: `python -m uvicorn main:app --reload --host 127.0.0.1 --port 8001`
+- Update `API_BASE_URL` in `frontend/src/App.jsx` to match the new port
 
-3. **Port 8000 already in use**:
-   - Change the port in `start_backend.ps1` or use: `uvicorn main:app --reload --port 8001`
-   - Update `API_BASE_URL` in `frontend/src/App.jsx` to match
+**Dependencies installation fails**:
+- Update pip: `python -m pip install --upgrade pip`
+- For Python 3.14+, some packages may need version flexibility (already handled in requirements.txt)
+
+**Module not found errors**:
+- Ensure you're in the `backend` directory when running uvicorn
+- Verify all dependencies are installed: `python -m pip list`
 
 ### Frontend Issues
 
-1. **Node.js not found**:
-   - Install Node.js from [nodejs.org](https://nodejs.org/)
-   - Restart terminal after installation
+**Node.js not found**:
+- Install Node.js from [nodejs.org](https://nodejs.org/)
+- Restart terminal after installation
 
-2. **npm install fails**:
-   - Clear npm cache: `npm cache clean --force`
-   - Delete `node_modules` and `package-lock.json`, then run `npm install` again
+**npm install fails**:
+- Clear npm cache: `npm cache clean --force`
+- Delete `node_modules` and `package-lock.json`, then run `npm install` again
 
-3. **Port 5173 already in use**:
-   - Vite will automatically try the next available port
-   - Or specify a port: `npm run dev -- --port 5174`
+**Port 5173 already in use**:
+- Vite will automatically try the next available port
+- Or specify a port: `npm run dev -- --port 5174`
+
+**Cannot connect to backend**:
+- Ensure backend is running on `http://127.0.0.1:8000`
+- Check CORS settings in `backend/main.py`
+- Verify `API_BASE_URL` in `frontend/src/App.jsx` matches backend URL
 
 ### Connection Issues
 
-- Ensure backend is running before starting frontend
-- Check that backend CORS settings allow requests from frontend URL
-- Verify `API_BASE_URL` in `frontend/src/App.jsx` matches backend URL
+- **Backend not responding**: Check if backend server is running and accessible at http://127.0.0.1:8000/health
+- **CORS errors**: Verify backend CORS settings allow requests from frontend URL (http://localhost:5173)
+- **Network errors**: Ensure both servers are running and ports are not blocked by firewall
 
 ## Development Notes
 
-- Backend uses **FastAPI** with **PyTorch** for deep learning inference
-- Frontend uses **React 19** with **Vite** for fast development
-- Backend runs 5 models in parallel: EfficientNet, ResNet50, ViT, and hybrid models
-- Image quality validation is performed before inference
+- **Backend**: FastAPI with PyTorch for deep learning inference
+- **Frontend**: React 19 with Vite for fast development
+- **Models**: 5 models run in parallel (EfficientNet, ResNet50, ViT, Hybrid EffViT, Hybrid ResViT)
+- **Image Validation**: Automatic quality checks before inference
+- **No Virtual Environment**: Project uses system-wide Python installation
 
 ## Stopping the Servers
 
-- Press `Ctrl+C` in each server window to stop
-- Or simply close the PowerShell windows
+- Press `Ctrl+C` in each terminal window to stop the respective server
+- Or simply close the terminal windows
+
+## Next Steps
+
+After setup, you can:
+1. Open the frontend at http://localhost:5173
+2. Upload a retinal fundus image
+3. View predictions from all 5 models
+4. Check API documentation at http://127.0.0.1:8000/docs
+
+For detailed information, see the [README.md](./README.md) file.

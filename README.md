@@ -63,6 +63,44 @@ The primary objective is to develop a robust, multi-model deep learning system t
 
 ---
 
+## 📊 Dataset
+
+### Training Dataset
+
+The models in this project were trained on a comprehensive diabetic retinopathy dataset available on Kaggle:
+
+**Dataset**: [EyePACS-APTOS-MESSIDOR Diabetic Retinopathy](https://www.kaggle.com/datasets/ascanipek/eyepacs-aptos-messidor-diabetic-retinopathy)
+
+This dataset combines three well-known diabetic retinopathy datasets:
+- **EyePACS**: Large-scale dataset from the EyePACS screening program
+- **APTOS**: Asia Pacific Tele-Ophthalmology Society dataset
+- **MESSIDOR**: French diabetic retinopathy dataset
+
+### Dataset Characteristics
+
+- **Image Type**: Retinal fundus photographs
+- **Classification**: 5 severity levels (0-4)
+  - Grade 0: No DR
+  - Grade 1: Mild DR
+  - Grade 2: Moderate DR
+  - Grade 3: Severe DR
+  - Grade 4: Proliferative DR
+- **Format**: High-resolution retinal fundus images
+- **Preprocessing**: Images were resized to 224x224 pixels and normalized for model training
+
+### Dataset Usage
+
+The dataset was used to train and validate all five deep learning models:
+- EfficientNet-B0
+- ResNet-50
+- Vision Transformer (ViT)
+- Hybrid EfficientNet-ViT
+- Hybrid ResNet-ViT
+
+**Note**: To access the dataset, you'll need a Kaggle account. Download instructions are available on the dataset page.
+
+---
+
 ## 🛠️ Tech Stack
 
 ### Backend
@@ -274,6 +312,8 @@ Ensure all model weight files are present in `backend/models/`:
 - `vit.pt`
 - `hybrid_effvit.pt`
 - `hybrid_resvit.pt`
+
+> **Note**: Model files are not included in this repository due to their large size. Pre-trained models trained on the [EyePACS-APTOS-MESSIDOR dataset](https://www.kaggle.com/datasets/ascanipek/eyepacs-aptos-messidor-diabetic-retinopathy) need to be placed in the `backend/models/` directory. See the [Dataset](#-dataset) section for more information.
 
 ### Running the Application
 
@@ -523,10 +563,18 @@ This is an academic/research project. For contributions or questions, please con
 
 ## 📚 References
 
+### Datasets
+- **Training Dataset**: [EyePACS-APTOS-MESSIDOR Diabetic Retinopathy Dataset](https://www.kaggle.com/datasets/ascanipek/eyepacs-aptos-messidor-diabetic-retinopathy) on Kaggle
+
+### Research Papers
 - Diabetic Retinopathy: [American Academy of Ophthalmology](https://www.aao.org/)
 - EfficientNet: [Paper](https://arxiv.org/abs/1905.11946)
 - Vision Transformer: [Paper](https://arxiv.org/abs/2010.11929)
+
+### Frameworks & Tools
 - FastAPI: [Documentation](https://fastapi.tiangolo.com/)
+- PyTorch: [Documentation](https://pytorch.org/docs/)
+- React: [Documentation](https://react.dev/)
 
 ---
 
